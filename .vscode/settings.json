@@ -1,0 +1,18 @@
+{
+  "java.import.gradle.wrapper.enabled": true,
+  "java.import.gradle.java.home": "/Users/liminglin/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home",
+  "java.jdt.ls.java.home": "/Users/liminglin/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-17",
+      "path": "/Users/liminglin/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home",
+      "default": true
+    }
+  ],
+  "gradle.java.home": "/Users/liminglin/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home",
+  "kotlin.compiler.jvm.target": "17",
+  "terminal.integrated.env.osx": {
+    "JAVA_HOME": "/Users/liminglin/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
+  }
+}
