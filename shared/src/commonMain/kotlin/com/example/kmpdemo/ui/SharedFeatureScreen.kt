@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.kmpdemo.Counter
 import com.example.kmpdemo.Greeter
+import com.example.kmpdemo.host.LocalHostContext
 
 @Composable
 fun SharedFeatureScreen() {
+    val host = LocalHostContext.current
     val greeting = remember { Greeter().greet() }
     val counter = remember { Counter() }
     var count by remember { mutableStateOf(counter.value) }
@@ -35,11 +37,21 @@ fun SharedFeatureScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = greeting, style = MaterialTheme.typography.headlineSmall)
+            Spacer(Modifier.height(12.dp))
+            Text(text = "shopId: ${host.shopId}", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = "userId: ${host.userId ?: "（未登录）"}",
+                style = MaterialTheme.typography.bodyLarge,
+            )
             Spacer(Modifier.height(16.dp))
             Text(text = "Count: $count", style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(16.dp))
             Button(onClick = { count = counter.increment() }) {
                 Text("Increment")
+            }
+            Spacer(Modifier.height(8.dp))
+            Button(onClick = { host.openNativeOrderDetail("ORDER-DEMO-001") }) {
+                Text("回调宿主：打开订单详情")
             }
         }
     }

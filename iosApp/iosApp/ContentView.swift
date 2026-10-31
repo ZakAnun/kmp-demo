@@ -11,8 +11,18 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 
 struct ContentView: View {
+    init() {
+        SharedFeatureBootstrapKt.installHostContext(
+            shopId: "sample-shop-001",
+            userId: "sample-user"
+        )
+    }
+
     var body: some View {
         ComposeView()
             .ignoresSafeArea()
+            .onDisappear {
+                SharedFeatureBootstrapKt.clearHostContext()
+            }
     }
 }

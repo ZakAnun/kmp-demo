@@ -9,11 +9,17 @@ struct ContentView: View {
         VStack(spacing: 16) {
             Text("存量 iOS 宿主")
                 .font(.title2)
-            Button("打开 KMP 共享页") {
+            Button("打开 KMP 共享页（注入 HostContext）") {
+                SharedFeatureBootstrapKt.installHostContext(
+                    shopId: "host-shop-10086",
+                    userId: "host-user-001"
+                )
                 showFeature = true
             }
         }
-        .sheet(isPresented: $showFeature) {
+        .sheet(isPresented: $showFeature, onDismiss: {
+            SharedFeatureBootstrapKt.clearHostContext()
+        }) {
             FeatureView()
                 .ignoresSafeArea()
         }

@@ -15,10 +15,30 @@ class HostActivity : Activity() {
             text = "存量 Android 宿主"
             textSize = 20f
         }
-        val button = Button(this).apply {
-            text = "打开 KMP 共享页"
+        val installButton = Button(this).apply {
+            text = "方式1：install 后打开（推荐）"
             setOnClickListener {
+                SharedFeatureRuntime.install(
+                    AndroidHostContext(
+                        activity = this@HostActivity,
+                        shopId = HOST_SHOP_ID,
+                        userId = HOST_USER_ID,
+                    ),
+                )
                 startActivity(Intent(this@HostActivity, SharedFeatureActivity::class.java))
+            }
+        }
+        val intentButton = Button(this).apply {
+            text = "方式2：仅 Intent 传参（不 install）"
+            setOnClickListener {
+                SharedFeatureRuntime.clear()
+                startActivity(
+                    SharedFeatureActivity.createIntent(
+                        context = this@HostActivity,
+                        shopId = HOST_SHOP_ID,
+                        userId = HOST_USER_ID,
+                    ),
+                )
             }
         }
         setContentView(
@@ -26,8 +46,14 @@ class HostActivity : Activity() {
                 orientation = LinearLayout.VERTICAL
                 setPadding(48, 96, 48, 48)
                 addView(title)
-                addView(button)
+                addView(installButton)
+                addView(intentButton)
             },
         )
+    }
+
+    companion object {
+        private const val HOST_SHOP_ID = "host-shop-10086"
+        private const val HOST_USER_ID = "host-user-001"
     }
 }
