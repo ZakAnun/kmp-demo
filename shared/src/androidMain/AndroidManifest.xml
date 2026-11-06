@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 蓝牙：bondedDevices 在 Android 12+ 需要 BLUETOOTH_CONNECT（运行时授权由宿主处理） -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <application>
         <activity
             android:name="com.example.kmpdemo.ui.SharedFeatureActivity"
