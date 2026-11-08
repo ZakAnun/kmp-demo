@@ -52,7 +52,7 @@ actual class BleScanner {
                 isBluetoothOn = true,
                 pairedDeviceCount = paired.size,
                 firstPairedName = first?.name?.takeIf { it.isNotBlank() } ?: first?.address,
-                note = "Android：已配对设备（bondedDevices）",
+                note = "平台：Android 已配对设备（bondedDevices）",
             )
         } catch (se: SecurityException) {
             BluetoothSummary(

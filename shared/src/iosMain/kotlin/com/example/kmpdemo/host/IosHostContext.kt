@@ -5,6 +5,6 @@ class IosHostContext(
     override val userId: String?,
 ) : HostContext {
     override fun openNativeOrderDetail(orderId: String) {
-        println("Host native: open order $orderId (shop=$shopId)")
+        deliverHostUserMessage(orderId, shopId)
     }
 }

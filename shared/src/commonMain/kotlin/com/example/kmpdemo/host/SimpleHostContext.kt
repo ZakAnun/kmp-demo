@@ -4,7 +4,9 @@ package com.example.kmpdemo.host
 class SimpleHostContext(
     override val shopId: String,
     override val userId: String?,
-    private val onOpenNativeOrderDetail: (orderId: String) -> Unit = {},
+    private val onOpenNativeOrderDetail: (orderId: String) -> Unit = { orderId ->
+        deliverHostUserMessage(orderId, shopId)
+    },
 ) : HostContext {
     override fun openNativeOrderDetail(orderId: String) {
         onOpenNativeOrderDetail(orderId)

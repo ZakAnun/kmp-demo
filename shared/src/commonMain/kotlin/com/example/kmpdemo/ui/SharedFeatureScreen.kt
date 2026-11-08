@@ -46,6 +46,8 @@ import com.example.kmpdemo.Counter
 import com.example.kmpdemo.Greeter
 import com.example.kmpdemo.feed.GitHubEventRow
 import com.example.kmpdemo.feed.SharedFeedViewModel
+import com.example.kmpdemo.host.HostNotifier
+import com.example.kmpdemo.host.HostUiMessages
 import com.example.kmpdemo.host.LocalHostContext
 import com.example.kmpdemo.platform.openUrlInBrowser
 import kotlinx.coroutines.launch
@@ -68,14 +70,27 @@ fun SharedFeatureScreen() {
         onDispose { vm.onCleared() }
     }
 
+    DisposableEffect(snackbarHostState) {
+        HostNotifier.setListener { message ->
+            scope.launch { snackbarHostState.showSnackbar(message) }
+        }
+        onDispose { HostNotifier.setListener(null) }
+    }
+
     LaunchedEffect(Unit) {
         vm.loadFeed()
-        vm.refreshBleSummary()
+        vm.refreshBleSummary(userInitiated = false)
     }
 
     LaunchedEffect(ui.errorMessage) {
         ui.errorMessage?.let { msg ->
             scope.launch { snackbarHostState.showSnackbar(msg) }
+        }
+    }
+
+    LaunchedEffect(ui.bleReadGeneration) {
+        if (ui.bleReadGeneration > 0) {
+            snackbarHostState.showSnackbar(HostUiMessages.bleRefreshed(ui.bleReadGeneration))
         }
     }
 
@@ -146,8 +161,29 @@ fun SharedFeatureScreen() {
                         Column(Modifier.padding(16.dp)) {
                             Text("蓝牙摘要（expect/actual）", style = MaterialTheme.typography.titleSmall)
                             Spacer(Modifier.height(6.dp))
+                            if (ui.bleReadGeneration > 0) {
+                                Text(
+                                    "已重读 ${ui.bleReadGeneration} 次",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Spacer(Modifier.height(4.dp))
+                            }
                             when {
-                                ui.bluetooth == null -> Text("读取中…", style = MaterialTheme.typography.bodySmall)
+                                ui.bluetooth == null || ui.isBleRefreshing ->
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        if (ui.isBleRefreshing) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.width(16.dp).height(16.dp),
+                                                strokeWidth = 2.dp,
+                                            )
+                                            Spacer(Modifier.width(8.dp))
+                                        }
+                                        Text(
+                                            if (ui.isBleRefreshing) "正在重读蓝牙…" else "读取中…",
+                                            style = MaterialTheme.typography.bodySmall,
+                                        )
+                                    }
                                 else -> {
                                     val b = ui.bluetooth!!
                                     Text(
@@ -171,7 +207,10 @@ fun SharedFeatureScreen() {
                                 Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                             }
                             Spacer(Modifier.height(8.dp))
-                            Button(onClick = { vm.refreshBleSummary() }) {
+                            Button(
+                                onClick = { vm.refreshBleSummary() },
+                                enabled = !ui.isBleRefreshing,
+                            ) {
                                 Text("重读蓝牙")
                             }
                         }

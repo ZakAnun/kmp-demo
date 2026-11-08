@@ -11,7 +11,7 @@ actual class BleScanner {
             isBluetoothOn = true,
             pairedDeviceCount = 0,
             firstPairedName = null,
-            note = "iOS：展示 expect/actual 分支；配对接入请用 CoreBluetooth 单独实现",
+            note = "平台：iOS 不提供系统配对列表，需用 CoreBluetooth 扫描",
         )
     }
 }

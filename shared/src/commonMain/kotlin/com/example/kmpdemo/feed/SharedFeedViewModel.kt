@@ -18,6 +18,9 @@ data class SharedFeedUiState(
     val errorMessage: String? = null,
     val bluetooth: BluetoothSummary? = null,
     val bleError: String? = null,
+    val isBleRefreshing: Boolean = false,
+    /** 每次「重读蓝牙」成功后递增，便于 iOS 等结果不变时仍有可见反馈。 */
+    val bleReadGeneration: Int = 0,
 )
 
 class SharedFeedViewModel(
@@ -49,15 +52,30 @@ class SharedFeedViewModel(
         }
     }
 
-    fun refreshBleSummary() {
+    fun refreshBleSummary(userInitiated: Boolean = true) {
         scope.launch {
+            _uiState.update { it.copy(isBleRefreshing = true, bleError = null) }
             runCatching { bleScanner.readSummary() }
                 .onSuccess { summary ->
-                    _uiState.update { it.copy(bluetooth = summary, bleError = null) }
+                    _uiState.update {
+                        it.copy(
+                            bluetooth = summary,
+                            bleError = null,
+                            isBleRefreshing = false,
+                            bleReadGeneration = if (userInitiated) {
+                                it.bleReadGeneration + 1
+                            } else {
+                                it.bleReadGeneration
+                            },
+                        )
+                    }
                 }
                 .onFailure { e ->
                     _uiState.update {
-                        it.copy(bleError = e.message ?: e.toString())
+                        it.copy(
+                            isBleRefreshing = false,
+                            bleError = e.message ?: e.toString(),
+                        )
                     }
                 }
         }

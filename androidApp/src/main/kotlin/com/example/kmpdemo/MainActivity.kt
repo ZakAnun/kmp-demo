@@ -1,7 +1,6 @@
 package com.example.kmpdemo
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.kmpdemo.host.SharedFeatureRuntime
@@ -13,9 +12,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SharedFeatureRuntime.install(
-            SimpleHostContext(shopId = "sample-shop-001", userId = "sample-user") { orderId ->
-                Toast.makeText(this, "sampleApp 原生回调: $orderId", Toast.LENGTH_SHORT).show()
-            },
+            SimpleHostContext(shopId = "sample-shop-001", userId = "sample-user"),
         )
         setContent {
             SharedFeatureHostContent {
